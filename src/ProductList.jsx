@@ -9,6 +9,7 @@ function ProductList({ onHomeClick }) {
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
     const [addedToCart, setAddedToCart] = useState({});
     const dispatch = useDispatch();
+    const cart = useSelector(state => state.cart.items);
     const totalItems = useSelector(state => state.cart.items.reduce((total, item) => total + item.quantity, 0));
 
     const plantsArray = [
@@ -272,6 +273,14 @@ function ProductList({ onHomeClick }) {
         }));
     };
 
+    const cartContains = (cartItem) => {
+        if (cart.find(item => item.name === cartItem.name)) {
+            return true;
+        }
+
+        return false;
+    };
+
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -330,11 +339,11 @@ function ProductList({ onHomeClick }) {
                                         <div className="product-cost">{plant.cost}</div>
                                         
                                         <button
-                                            className={addedToCart[plant.name] ? "product-button added-to-cart" : "product-button"}
+                                            className={cartContains(plant) ? "product-button added-to-cart" : "product-button"}
                                             onClick={() => handleAddToCart(plant)}
-                                            disabled={addedToCart[plant.name]}
+                                            disabled={cartContains(plant)}
                                         >
-                                            {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
+                                            {cartContains(plant) ? "Added to Cart" : "Add to Cart"}
                                         </button>
                                     </div>
                                 ))}
